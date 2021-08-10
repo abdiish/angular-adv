@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { FormBuilder, Validators } from '@angular/forms';
+import { UsuarioService } from '../../services/usuario.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-login',
@@ -8,16 +11,35 @@ import { Router } from '@angular/router';
     './login.component.css'
   ]
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent {
 
-  constructor( private router: Router) { }
+  public loginForm = this.fb.group({
 
-  ngOnInit(): void {
-  }
+    email: ['alancr@gmail.com', [Validators.required, Validators.email] ],
+    password: ['123456', Validators.required],
+    remember: [false]
 
-  login(){
-    
-    this.router.navigateByUrl('/');
+  });
+
+  constructor( private router: Router,
+               private fb: FormBuilder,
+               private usuarioService: UsuarioService ) { }
+
+
+
+  login() {
+
+    this.usuarioService.login( this.loginForm.value )
+      .subscribe( resp => {
+        console.log(resp);
+        
+      }, (err) =>{
+        Swal.fire('Error', err.error.msg, 'error');
+      });
+
+    // Recuperar valores capturados en formulario
+    // console.log( this.loginForm.value);
+    // this.router.navigateByUrl('/');
     
   }
 
