@@ -59,6 +59,7 @@
                     <div class="col text-danger">
                         <p *ngIf="campoNoValido('nombre')">*El nombre es obligatorio</p>
                         <p *ngIf="campoNoValido('email')">*El email es obligatorio y debe ser válido</p>
+                        <p *ngIf="contrasenasNoValidas()">*Las contraseñas deden ser iguales</p>
                         <p *ngIf="aceptaTerminos()">*Debe de aceptar los términos de uso</p>
 
                     </div>
