@@ -4,6 +4,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { UsuarioService } from '../../services/usuario.service';
 import Swal from 'sweetalert2';
 
+declare const gapi:any;
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -11,7 +13,7 @@ import Swal from 'sweetalert2';
     './login.component.css'
   ]
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   public loginForm = this.fb.group({
 
@@ -24,6 +26,11 @@ export class LoginComponent {
   constructor( private router: Router,
                private fb: FormBuilder,
                private usuarioService: UsuarioService ) { }
+
+
+  ngOnInit(): void {
+    this.renderButton();
+  }
 
 
 
@@ -45,6 +52,29 @@ export class LoginComponent {
     // console.log( this.loginForm.value);
     // this.router.navigateByUrl('/');
     
+  }
+
+  onSuccess( googleUser: any ) {
+    //console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
+    var id_token = googleUser.getAuthResponse().id_token;
+    console.log(id_token);
+    
+  }
+
+  onFailure(error: any) {
+    console.log(error);
+  }
+
+  renderButton() {
+    gapi.signin2.render('my-signin2', {
+      'scope': 'profile email',
+      'width': 240,
+      'height': 50,
+      'longtitle': true,
+      'theme': 'dark',
+      'onsuccess': this.onSuccess,
+      'onfailure': this.onFailure
+    });
   }
 
 }
