@@ -15,6 +15,8 @@ declare const gapi:any;
 })
 export class LoginComponent implements OnInit{
 
+  public auth2:any;
+
   public loginForm = this.fb.group({
 
     email: [ localStorage.getItem('email') || '', [Validators.required, Validators.email] ],
@@ -53,17 +55,7 @@ export class LoginComponent implements OnInit{
     // this.router.navigateByUrl('/');
     
   }
-
-  onSuccess( googleUser: any ) {
-    //console.log('Logged in as: ' + googleUser.getBasicProfile().getName());
-    var id_token = googleUser.getAuthResponse().id_token;
-    console.log(id_token);
-    
-  }
-
-  onFailure(error: any) {
-    console.log(error);
-  }
+  
 
   renderButton() {
     gapi.signin2.render('my-signin2', {
@@ -71,10 +63,34 @@ export class LoginComponent implements OnInit{
       'width': 240,
       'height': 50,
       'longtitle': true,
-      'theme': 'dark',
-      'onsuccess': this.onSuccess,
-      'onfailure': this.onFailure
+      'theme': 'dark'
     });
+
+    this.startApp();
+  }
+
+  startApp () {
+    gapi.load('auth2', () => {
+      // Retrieve the singleton for the GoogleAuth library and set up the client.
+      this.auth2 = gapi.auth2.init({
+        client_id: '1056251519311-kmb08883e7bdgke6l1ld1l0b1kiod3m2.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+        // Request scopes in addition to 'profile' and 'email'
+        //scope: 'additional_scope'
+      });
+      this.attachSignin(document.getElementById('my-signin2'));
+    });
+  };
+
+  attachSignin(element: any) {
+    console.log(element.id);
+    this.auth2.attachClickHandler(element, {},
+        (googleUser: any) => {
+            const  id_token = googleUser.getAuthResponse().id_token;
+            this.usuarioService.loginGoogle(id_token).subscribe();
+        }, (error: any) => {
+          alert(JSON.stringify(error, undefined, 2));
+        });
   }
 
 }

@@ -19,6 +19,7 @@
     "@angular/platform-browser-dynamic": "~12.0.3",
     "@angular/router": "~12.0.3",
     "chart.js": "^2.9.3",
+    "google-auth-library": "^7.5.0",
     "ng2-charts": "^2.3.0",
     "rxjs": "~6.6.0",
     "sweetalert2": "^11.1.2",
